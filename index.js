@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const session = require("express-session");
+const FileStore = require("session-file-store")(session);
 
 const publicRoutes = require("./routes/public.route");
 
@@ -14,8 +15,14 @@ app.use(
     secret: "eijibiji",
     resave: false,
     saveUninitialized: false,
+    store: new FileStore({
+      retries: 0,
+    }),
   })
 );
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.use("/", publicRoutes);
 
