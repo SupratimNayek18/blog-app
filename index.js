@@ -1,7 +1,19 @@
 const express = require("express");
 const app = express();
+const path = require("path");
+const session = require("express-session");
 
 app.set("view engine", "ejs");
+
+app.use("/static", express.static(path.join(__dirname, "public")));
+
+app.use(
+  session({
+    secret: "eijibiji",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.get("/", (req, res) => {
   res.render("pages/home");
