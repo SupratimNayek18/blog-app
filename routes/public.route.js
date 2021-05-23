@@ -1,13 +1,12 @@
 const router = require("express").Router();
+const UserModels = require("../models/user.model");
 
 router.get("/", (req, res) => {
-  console.log(req.session);
-
-  res.render("pages/home");
+  res.render("pages/home", { username: req.session.username });
 });
 
 router.get("/about", (req, res) => {
-  res.render("pages/about");
+  res.render("pages/about", { username: req.session.username });
 });
 
 router.get("/signin", (req, res) => {
@@ -18,9 +17,31 @@ router.get("/signup", (req, res) => {
   res.render("pages/signUp");
 });
 
-router.post("/signin", (req, res) => {
-  req.session.username = req.body.username;
-  res.redirect("/");
+router.post("/signin", async (req, res) => {
+  const { username, password } = req.body;
+  var user = await UserModels.findByUsername(username.toLowerCase());
+  // console.log(user);
+  if (user && user.password == password) {
+    req.session.username = username;
+    return res.redirect("/", { username: req.session.username });
+  }
+});
+
+router.post("/signup", async (req, res) => {
+  const { username, name, mobile, password } = req.body;
+  //checking if username exists or not
+  var isPresent = await UserModels.checkUserName(username.toLowerCase());
+  if (isPresent) {
+    res.redirect("/signup");
+  }
+  await UserModels.create({ ...req.body, username: username.toLowerCase() });
+  req.session.username = username;
+  res.redirect("/", { username: req.session.username });
+});
+
+router.get("/logout", async (req, res) => {
+  req.session.destroy();
+  return res.redirect("/signin");
 });
 
 module.exports = router;

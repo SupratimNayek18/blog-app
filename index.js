@@ -3,6 +3,7 @@ const app = express();
 const path = require("path");
 const session = require("express-session");
 const FileStore = require("session-file-store")(session);
+const postRoutes = require("./routes/post.route");
 
 const publicRoutes = require("./routes/public.route");
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", publicRoutes);
+app.use("/posts", postRoutes);
 
 app.listen(3000, () => {
   console.log("server is started");
