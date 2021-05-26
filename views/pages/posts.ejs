@@ -4,6 +4,17 @@
     <%- include('../partials/head.ejs',{title:'Posts'}) %>
   </head>
   <body>
-    <h1>Posts</h1>
+    <%- include('../partials/nav.ejs',{path:'/posts'}) %>
+    <div class="container">
+      <div class="row">
+        <% if (posts.length==0) {%>
+        <div class="col-md-12" style="margin-top: 20px; text-align: center">
+          <h3>No posts yet</h3>
+          <a href="/posts/create" class="btn btn-primary">Create Post</a>
+        </div>
+        <% } %> <% for( let postId = 0; postId < posts.length;postId++ ) { %>
+        <%- include('../partials/postItem.ejs',{post:posts[postId]}) %> <% } %>
+      </div>
+    </div>
   </body>
 </html>
